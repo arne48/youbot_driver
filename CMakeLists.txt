@@ -79,6 +79,7 @@ SET(YOUBOT_DRIVER_SRC
   ${PROJECT_SOURCE_DIR}/src/youbot/YouBotGripper.cpp
   ${PROJECT_SOURCE_DIR}/src/youbot/YouBotGripperBar.cpp
   ${PROJECT_SOURCE_DIR}/src/youbot/YouBotGripperParameter.cpp
+  ${PROJECT_SOURCE_DIR}/src/youbot/YouBotGripperTHK.cpp
   ${PROJECT_SOURCE_DIR}/src/youbot/DataTrace.cpp
   ${PROJECT_SOURCE_DIR}/src/youbot/GripperDataTrace.cpp
   ${PROJECT_SOURCE_DIR}/src/youbot/YouBotJointParameter.cpp
@@ -98,6 +99,7 @@ SET(YOUBOT_DRIVER_HEADERS
   include/youbot/YouBotGripper.hpp
   include/youbot/YouBotGripperBar.hpp
   include/youbot/YouBotGripperParameter.hpp
+  include/youbot/YouBotGripperTHK.hpp
   include/youbot/YouBotBase.hpp
   include/youbot/YouBotManipulator.hpp
   include/youbot/YouBotJoint.hpp
