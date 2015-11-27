@@ -16,7 +16,7 @@
  *
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  *
- * This sofware is published under a dual-license: GNU Lesser General Public 
+ * This sofware is published under a dual-license: GNU Lesser General Public
  * License LGPL 2.1 and BSD license. The dual-license implies that users of this
  * code may choose which terms they prefer.
  *
@@ -149,22 +149,22 @@ void YouBotGripper::setConfigurationParameter(const CalibrateGripper& parameter)
 		IsCalibratedSetMessage.stctOutput.typeNumber = index;
 		IsCalibratedSetMessage.stctOutput.motorNumber = USER_VARIABLE_BANK;
 		IsCalibratedSetMessage.stctOutput.value = 1;
-		
+
 
 		bool doCalibration = true;
 		if (parameter.value == false) {
 			if (!retrieveValueFromMotorContoller(IsCalibratedReadMessage)) {
 				IsCalibratedReadMessage.stctInput.value = 0;
 			}
-			
+
       if (IsCalibratedReadMessage.stctInput.value == 1) {
         doCalibration = false;
       }
 		}
-			
+
 		if(doCalibration){
       LOG(info) << "Calibrate Gripper";
- 
+
       YouBotSlaveMailboxMsg message;
 
       unsigned int maxenc = 0;
@@ -207,7 +207,7 @@ void YouBotGripper::setConfigurationParameter(const CalibrateGripper& parameter)
       setValueToMotorContoller(message);
       message.stctOutput.motorNumber = 1; //move bar 1
       setValueToMotorContoller(message);
-      
+
       targetReachedBar1 = false;
       targetReachedBar2 = false;
 
@@ -220,7 +220,7 @@ void YouBotGripper::setConfigurationParameter(const CalibrateGripper& parameter)
         if (targetReachedBar1 && targetReachedBar2)
           break;
       }
-      
+
       //stop Gripper motor
       /*
       message.stctOutput.moduleAddress = GRIPPER;
@@ -231,13 +231,13 @@ void YouBotGripper::setConfigurationParameter(const CalibrateGripper& parameter)
       message.stctOutput.motorNumber = 1; //move bar 1
       setValueToMotorContoller(message);
 */
-      
+
       // set pose to zero as reference
       ActualPosition actualPose;
       actualPose.setParameter(0);
       bar1->setConfigurationParameter(actualPose);
       bar2->setConfigurationParameter(actualPose);
-			
+
 			 // set a flag in the user variable to remember that it is calibrated
       this->setValueToMotorContoller(IsCalibratedSetMessage);
 		}
@@ -280,10 +280,10 @@ void YouBotGripper::setData(const OneDOFGripperData& data) {
 
 void YouBotGripper::setData(const GripperBarSpacingSetPoint& barSpacing) {
   // Bouml preserved body begin 0005F8F1
-    
+
     GripperBarPositionSetPoint setpointBar1;
     GripperBarPositionSetPoint setpointBar2;
-		
+
 		setpointBar1.barPosition = barSpacing.barSpacing/2.0;
 		setpointBar2.barPosition = barSpacing.barSpacing/2.0;
 
@@ -299,24 +299,38 @@ void YouBotGripper::getData(GripperSensedBarSpacing& barSpacing) const {
 		GripperSensedBarPosition bar2Position;
 		bar1->getData(bar1Position);
 		bar2->getData(bar2Position);
-		
+
     barSpacing.barSpacing = bar1Position.barPosition + bar2Position.barPosition;
 
   // Bouml preserved body end 0005F971
 }
 
+void YouBotGripper::stop() {
+  YouBotSlaveMailboxMsg message;
+
+  message.stctOutput.moduleAddress = GRIPPER;
+  message.stctOutput.commandNumber = MST;
+  message.stctOutput.value = 0;
+  message.stctOutput.motorNumber = 0; //move bar 0
+  setValueToMotorContoller(message);
+  message.stctOutput.motorNumber = 1; //move bar 1
+  setValueToMotorContoller(message);
+  
+}
+
+
 void YouBotGripper::open() {
   // Bouml preserved body begin 000E3BF1
-   
+
     MaxEncoderValue maxEnc;
     unsigned int bar1MaxEncoderValue = 0;
     unsigned int bar2MaxEncoderValue = 0;
-  
+
     bar1->getConfigurationParameter(maxEnc);
     maxEnc.getParameter(bar1MaxEncoderValue);
     bar2->getConfigurationParameter(maxEnc);
     maxEnc.getParameter(bar2MaxEncoderValue);
-    
+
     GripperBarEncoderSetpoint setpointBar1;
     GripperBarEncoderSetpoint setpointBar2;
     setpointBar1.barEncoder = bar1MaxEncoderValue;
